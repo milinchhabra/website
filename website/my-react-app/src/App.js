@@ -12,10 +12,10 @@ function Circle({ color }) {
   return <div className="circle" style={{ backgroundColor: color }}></div>;
 }
 
+
 export default function Board() {
-  const [xIsNext, setXIsNext] = useState(true);
-  const [x, y] = [7, 6]; // Define dimensions here
-  const [squares, setSquares] = useState(Array(x * y).fill(null));
+  const [x, y] = [7, 6];
+  const [squares, setSquares] = useState(Array(y).fill(null).map(()=>new Array(x).fill(null)));
 
 
   function handleClick(cellx,celly) {
@@ -27,16 +27,10 @@ export default function Board() {
       bottomrow=i
       break
       }
-    const nextSquares = squares.slice();
-    nextSquares[i] = xIsNext ? 'Yellow' : 'Red';
-    setSquares(nextSquares);
-    setXIsNext(!xIsNext);
-    
-    const winner = calculateWinner(nextSquares);
-    if (winner) {
-      // Do something when there's a winner, such as displaying a message or preventing further moves
-      console.log(`Player ${winner} wins!`);
     }
+    squares1[bottomrow][cellx] = 1
+    setSquares(squares1)  
+    console.log('clicked')
   }
   
   // function checkMouseCoordinates(event) {
@@ -47,9 +41,11 @@ export default function Board() {
   //     }
   //   }
 
+  // }
 
+  // document.addEventListener('mousemove', checkMouseCoordinates);
 
-
+  
   return (
     <div> {
       squares.map((row,y) => {
@@ -57,16 +53,15 @@ export default function Board() {
           row.map((cell,x) => {
             if (cell !== null) {
 
-    function horizontal(delta) {
-      return diagonal(delta, 0)
-    }
+              return <Square color= 'yellow'></Square>
+            }
             else {
               return <Square onSquareClick={(()=>{handleClick(x,y)})}></Square>
             }
+        })
+      }</div>
+      })
+  } </div>
+  )
 
-    let wonHorizontal = (horizontal(1) || horizontal(-1))
-    let wonVertical = (vertical(1) || vertical(-1))
-
-    let wonDiagonal = diagonal(-1, -1) || diagonal(-1, 1) || diagonal(1, 1) || diagonal(1, -1)
-    return (wonHorizontal || wonVertical || wonDiagonal)
-  } 
+}
