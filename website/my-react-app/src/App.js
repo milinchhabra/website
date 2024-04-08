@@ -17,10 +17,16 @@ export default function Board() {
   const [x, y] = [7, 6]; // Define dimensions here
   const [squares, setSquares] = useState(Array(x * y).fill(null));
 
-  function handleClick(i) {
-    if (squares[i] || calculateWinner(squares)) {
-      return;
-    }
+
+  function handleClick(cellx,celly) {
+    let squares1 = JSON.parse(JSON.stringify(squares))
+    let bottomrow = 5
+    for(let i = 5;i >= 0; i--) {
+      console.log(squares1,i,cellx)
+      if (squares1[i][cellx] == null) {
+      bottomrow=i
+      break
+      }
     const nextSquares = squares.slice();
     nextSquares[i] = xIsNext ? 'Yellow' : 'Red';
     setSquares(nextSquares);
@@ -33,54 +39,30 @@ export default function Board() {
     }
   }
   
+  // function checkMouseCoordinates(event) {
+  //   const coordinates = { x: event.clientX, y: event.clientY };
+  // //   for (squares){
+  // //     if (rowIndex == 1) {
+  //       <Circle color="yellow" />
+  //     }
+  //   }
+
+
+
+
   return (
-    <>
-      <div className="board">
-        {Array(y)
-          .fill(null)
-          .map((_, rowIndex) => (
-            <div className="board-row" key={rowIndex}>
-              {Array(x)
-                .fill(null)
-                .map((_, colIndex) => {
-                  const index = rowIndex * x + colIndex;
-                  return (
-                    <Square
-                      key={index}
-                      color={squares[index]}
-                      onSquareClick={() => handleClick(index)}
-                    />
-                  );
-                })}
-            </div>
-          ))}
-      </div>
-    </>
-  );
-}
-
-
-
-
-function checkWin() {
-    function diagonal(deltaX, deltaY) {
-      for(let i = 0; i < 4; i++) {
-        let x = (col+(i*deltaX))
-        let y = (newRow+(i*deltaY))
-        if(x < 0 || x >= xSize) return false;
-        if(y < 0 || y >= ySize) return false;
-        if(nextSquares[y][x] != played) return false;
-      }
-      return true;
-    }
+    <div> {
+      squares.map((row,y) => {
+        return <div>{
+          row.map((cell,x) => {
+            if (cell !== null) {
 
     function horizontal(delta) {
       return diagonal(delta, 0)
     }
-
-    function vertical(delta) {
-      return diagonal(0, delta)
-    }      
+            else {
+              return <Square onSquareClick={(()=>{handleClick(x,y)})}></Square>
+            }
 
     let wonHorizontal = (horizontal(1) || horizontal(-1))
     let wonVertical = (vertical(1) || vertical(-1))
