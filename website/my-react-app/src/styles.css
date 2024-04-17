@@ -43,6 +43,18 @@ body {
   float: right;
 }
 
-.timebutton {
-  float: right;
+.yellow {
+  background-color: rgb(255, 233, 66); /* RGB values for dark yellow */
+}
+
+.hoveryellow {
+  background-color: rgba(255, 233, 66, 0.5); /* RGB values for dark yellow */
+}
+
+.red {
+  background-color: rgb(255, 29, 29); /* RGB values for dark yellow */
+}
+
+.hoverred {
+  background-color: rgba(255, 29, 29, 0.5); /* RGB values for dark yellow */
 }
