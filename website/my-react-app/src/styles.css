@@ -2,9 +2,10 @@ body {
   margin: 0px;
 }
 
-
 .square {
-  border: 1px solid #999;
+  position: relative; /* Add position relative to establish a stacking context */
+  border: 1px solid rgb(57 140 218);
+  background-color: rgb(57 140 218);
   width: 30px;
   height: 30px;
   vertical-align: top;
@@ -12,11 +13,30 @@ body {
 }
 
 .circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Center the circle */
   height: 25px;
   width: 25px;
   border-radius: 50%;
-  margin: auto;
+  z-index: 1; /* Set a higher z-index value */
 }
+
+.hole {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Center the hole */
+  height: 25px;
+  width: 25px;
+  border-radius: 50%;
+  background-color: white;
+  z-index: 0; /* Set a lower z-index value */
+}
+
+
+
 
 .row {
   padding: 0px;
@@ -24,24 +44,14 @@ body {
 }
 
 .board {
-  margin: 0px;
+  max-width: 210px;
+  margin: auto;
+  border: 3px solid rgb(57 140 218);
+  border-radius: 5px;
+
 }
 
-.boardHolder {
-  text-align: center;
-  width: 60vw;
-  display: inline-block;
-}
 
-.buttonHolder {
-  width: 10vw;
-  float: right;
-}
-
-.turnHolder {
-  width: 10vw;
-  float: right;
-}
 
 .yellow {
   background-color: rgb(255, 233, 66); /* RGB values for dark yellow */

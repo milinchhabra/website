@@ -1,21 +1,22 @@
 import React, { useState } from 'react';
 
-function Square({ color, onSquareClick, Enter}) {
+function Square({ color,hover, onSquareClick, Enter}) {
   return (
     <button
     onClick={onSquareClick}
     onMouseEnter={Enter}
     className="square">
-    <Circle color= {color}/>
 
+
+    <div className={`circle ${hover ? `hover${color}` : color}`}></div>
+    <div class='hole'></div>
+    
     
     </button>
   );
 }
 
-function Circle({ color },{hover}) {
-  return <div className={`circle ${color}`} ></div>;
-}
+
 
 class SqInfo {
   constructor(player, hover) { 
@@ -23,7 +24,7 @@ class SqInfo {
     this.hover = hover
     this.color = null
    }
-
+  
 }
 
 
@@ -34,9 +35,16 @@ export default function Board() {
       tempsquares.push(new Array(x).fill(null).map(() => new SqInfo(null,false)));
   }
   const [squares, setSquares] = useState(tempsquares);
-  console.log(squares)
-
+  const [playerturn, setPlayerTurn] = useState('p1')
   
+  function getColor() {
+    if (playerturn === "p1") {
+      return "yellow"    
+    }
+    else if (playerturn === "p2") {
+      return "red"    }    
+  }
+
   function handleClick(cellx,celly) {
     let squares1 = structuredClone(squares)
     let bottomrow = 5
@@ -46,14 +54,21 @@ export default function Board() {
       break
       }
     }
-    squares1[bottomrow][cellx].player = 'p1'
-    squares1[bottomrow][cellx].color = 'yellow'
+    squares1[bottomrow][cellx].player = playerturn
     squares1[bottomrow][cellx].hover = false
-
-
+    squares1[bottomrow][cellx].color = getColor()
 
     setSquares(squares1)  
-    console.log('clicked')
+
+
+
+    if (playerturn === "p1") {
+      setPlayerTurn("p2")
+    }
+    else {
+      setPlayerTurn("p1")
+    }
+    console.log(playerturn)
   }
 
   function onEnter(cellx,celly) {
@@ -65,8 +80,9 @@ export default function Board() {
       if (squares1[i][cellx].player == null||squares1[i][cellx].hover === true) {
         bottomrow=i
         squares1[bottomrow][cellx].hover = true
-        squares1[bottomrow][cellx].player = "p1"
-        squares1[bottomrow][cellx].color = 'yellow'
+        squares1[bottomrow][cellx].player = playerturn
+        squares1[bottomrow][cellx].color = getColor()
+
 
         break
       }
@@ -76,18 +92,21 @@ export default function Board() {
     setSquares(squares1)  
   }
 
+  function onLeave(){
+    let squares1 = RemoveHovers()
+    setSquares(squares1)  
+  }
+
   function RemoveHovers() {
+
     let squares1 = structuredClone(squares)
 
     for(let xi = 5;xi >= 0; xi--) {
       for(let yi = 6; yi >= 0; yi--) {
       if(squares1[xi][yi].hover === true ){
         squares1[xi][yi].player = null
-        squares1[xi][yi].color = null
         squares1[xi][yi].hover = false
-
-        console.log(squares1[xi][yi])
-        console.log(squares[xi][yi])
+        squares1[xi][yi].color = null
 
 
        }
@@ -97,27 +116,16 @@ export default function Board() {
   }
 
   return (
-    // <div Leave={onLeave}> {
-    <div> {
-
+    <div class="board" onMouseLeave={onLeave}> {
+    // <div onMouseLeave={RemoveHovers}  > {
       squares.map((row,y) => {
         return <div>{
           row.map((cell,x) => {
-            if (cell.player !== undefined) {
-              console.log(cell.player)
-
                 return <Square 
-              color={cell.color} onSquareClick={(()=>{handleClick(x,y)})}  Enter={(()=>{onEnter(x,y)})}>  
+              color={cell.color} hover={cell.hover} onSquareClick={(()=>{handleClick(x,y)})}  Enter={(()=>{onEnter(x,y)})}>  
               </Square>
-            }
-            else {
-              return <Square
-               onSquareClick={(()=>{handleClick(x,y)})}  Enter={(()=>{onEnter(x,y)})}>  
-                </Square>
-            }
         })
-      }</div>
-      })
+      }</div>})
   } </div>
   )
 
