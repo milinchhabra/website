@@ -51,12 +51,13 @@ export default function Board() {
     for(let i = 5;i >= 0; i--) {
       if (squares1[i][cellx].player == null||squares1[i][cellx].hover === true) {
         bottomrow=i
+        squares1[bottomrow][cellx].player = playerturn
+        squares1[bottomrow][cellx].hover = false
+        squares1[bottomrow][cellx].color = getColor()
       break
       }
     }
-    squares1[bottomrow][cellx].player = playerturn
-    squares1[bottomrow][cellx].hover = false
-    squares1[bottomrow][cellx].color = getColor()
+
 
     setSquares(squares1)  
 
