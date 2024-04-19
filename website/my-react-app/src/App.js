@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 
-function Square({ color,hover, onSquareClick, Enter}) {
+function Square({ player, hover, onSquareClick, Enter }) {
   return (
     <button
-    onClick={onSquareClick}
-    onMouseEnter={Enter}
-    className="square">
+      onClick={onSquareClick}
+      onMouseEnter={Enter}
+      className="square">
 
+      {}
+      {player !== null && (
+        <div className={`circle ${player} ${hover ? 'hover' : ''}`}></div>
+      )}
 
-    <div className={`circle ${hover ? `hover${color}` : color}`}></div>
-    <div class='hole'></div>
-    
-    
+      <div className='hole'></div>
     </button>
   );
 }
@@ -22,7 +23,6 @@ class SqInfo {
   constructor(player, hover) { 
     this.player = player
     this.hover = hover
-    this.color = null
    }
   
 }
@@ -36,14 +36,7 @@ export default function Board() {
   }
   const [squares, setSquares] = useState(tempsquares);
   const [playerturn, setPlayerTurn] = useState('p1')
-  
-  function getColor() {
-    if (playerturn === "p1") {
-      return "yellow"    
-    }
-    else if (playerturn === "p2") {
-      return "red"    }    
-  }
+
 
   function handleClick(cellx,celly) {
     let squares1 = structuredClone(squares)
@@ -53,14 +46,11 @@ export default function Board() {
         bottomrow=i
         squares1[bottomrow][cellx].player = playerturn
         squares1[bottomrow][cellx].hover = false
-        squares1[bottomrow][cellx].color = getColor()
       break
       }
     }
 
-
     setSquares(squares1)  
-
 
 
     if (playerturn === "p1") {
@@ -82,8 +72,6 @@ export default function Board() {
         bottomrow=i
         squares1[bottomrow][cellx].hover = true
         squares1[bottomrow][cellx].player = playerturn
-        squares1[bottomrow][cellx].color = getColor()
-
 
         break
       }
@@ -107,8 +95,6 @@ export default function Board() {
       if(squares1[xi][yi].hover === true ){
         squares1[xi][yi].player = null
         squares1[xi][yi].hover = false
-        squares1[xi][yi].color = null
-
 
        }
       }
@@ -123,7 +109,7 @@ export default function Board() {
         return <div>{
           row.map((cell,x) => {
                 return <Square 
-              color={cell.color} hover={cell.hover} onSquareClick={(()=>{handleClick(x,y)})}  Enter={(()=>{onEnter(x,y)})}>  
+              player={cell.player} hover={cell.hover} onSquareClick={(()=>{handleClick(x,y)})}  Enter={(()=>{onEnter(x,y)})}>  
               </Square>
         })
       }</div>})

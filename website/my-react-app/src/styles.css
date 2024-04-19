@@ -1,40 +1,42 @@
-:root {
-  --object-size: 100px; /* Define a variable for the size of objects */
-}
-
 body {
   margin: 0px;
 }
 
 .square {
-  position: relative;
+  position: relative; /* Add position relative to establish a stacking context */
   border: 1px solid rgb(57 140 218);
   background-color: rgb(57 140 218);
-  width: var(--object-size);
-  height: var(--object-size);
+  width: 100px;
+  height: 100px;
   vertical-align: top;
   padding: 0px;
 }
 
-.circle,
+.circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Center the circle */
+  height: 90px;
+  width: 90px;
+  border-radius: 100%;
+  z-index: 1; /* Set a higher z-index value */
+}
+
 .hole {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
-  height: calc(var(--object-size) * 0.83); /* Adjusted size for circle and hole */
-  width: calc(var(--object-size) * 0.83); /* Adjusted size for circle and hole */
-  border-radius: 50%;
-}
-
-.circle {
-  z-index: 1;
-}
-
-.hole {
+  transform: translate(-50%, -50%); /* Center the hole */
+  height: 90px;
+  width: 90px;
+  border-radius: 100%;
   background-color: white;
-  z-index: 0;
+  z-index: 0; /* Set a lower z-index value */
 }
+
+
+
 
 .row {
   padding: 0px;
@@ -42,25 +44,20 @@ body {
 }
 
 .board {
-  max-width: calc(var(--object-size) * 7);
+  max-width: 700px;
   margin: auto;
   border: 3px solid rgb(57 140 218);
   border-radius: 5px;
-  
-}
 
-.yellow {
+}
+.p1 {
   background-color: rgb(255, 233, 66);
 }
 
-.hoveryellow {
-  background-color: rgba(255, 233, 66, 0.5);
-}
-
-.red {
+.p2 {
   background-color: rgb(255, 29, 29);
 }
 
-.hoverred {
-  background-color: rgba(255, 29, 29, 0.5);
+.hover {
+  opacity: 0.5;
 }
