@@ -2,25 +2,37 @@ body {
   margin: 0px;
 }
 
-.square {
-  position: relative; /* Add position relative to establish a stacking context */
-  border: 1px solid rgb(57 140 218);
-  background-color: rgb(57 140 218);
-  width: 100px;
-  height: 100px;
-  vertical-align: top;
-  padding: 0px;
-}
-
 .circle {
   position: absolute;
-  top: 50%;
+  top: 50%; /* Initially position the circles outside the viewport */
   left: 50%;
-  transform: translate(-50%, -50%); /* Center the circle */
-  height: 90px;
-  width: 90px;
+  transform: translate(-50%, -50%); /* Center the hole */
+  height: 80px;
+  width: 80px;
   border-radius: 100%;
-  z-index: 1; /* Set a higher z-index value */
+  z-index: 1;
+}
+
+.circle:not(.hover) {
+  animation-name: drop;
+  animation-duration: 0.3s;
+  animation-timing-function: ease-in;
+}
+
+
+@keyframes drop {
+  0%   { left: 50px; top: -500px; } /* Starting position outside the viewport */
+  100% { left: 50px; top: 50px; } /* Final position */
+
+}
+.square {
+  position: relative; /* Add position relative to establish a stacking context */
+  width: 100px;
+  height: 100px;
+      background: transparent;
+    border: none !important;
+  vertical-align: top;
+  padding: 0px;
 }
 
 .hole {
@@ -28,8 +40,8 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%); /* Center the hole */
-  height: 90px;
-  width: 90px;
+  height: 80px;
+  width: 80px;
   border-radius: 100%;
   background-color: white;
   z-index: 0; /* Set a lower z-index value */
@@ -47,7 +59,8 @@ body {
   max-width: 700px;
   margin: auto;
   border: 3px solid rgb(57 140 218);
-  border-radius: 5px;
+  background-color: rgb(57 140 218);
+  border-radius: 15px;
 
 }
 .p1 {
