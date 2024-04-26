@@ -50,12 +50,14 @@ body {
 }
 
 .p1 {
-  background-color: rgb(255, 233, 66);
+  background-image: url('yellowpiece.png');
+  background-size: 80px 80px;
+
 }
 
 .p2 {
-  background-color: rgb(255, 29, 29);
-}
+  background-image: url('redpiece.png');
+  background-size: 80px 80px;}
 
 .hover {
   opacity: 0.5;
