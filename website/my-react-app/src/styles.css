@@ -10,7 +10,8 @@ body {
   height: 80px;
   width: 80px;
   border-radius: 100%;
-  z-index: 1;
+  z-index: -1;
+
 }
 
 .circle:not(.hover) {
@@ -19,36 +20,20 @@ body {
   animation-timing-function: ease-in;
 }
 
-
 @keyframes drop {
   0%   { left: 50px; top: -500px; } /* Starting position outside the viewport */
   100% { left: 50px; top: 50px; } /* Final position */
-
 }
+
 .square {
   position: relative; /* Add position relative to establish a stacking context */
   width: 100px;
   height: 100px;
-      background: transparent;
-    border: none !important;
+  background: transparent;
+  border: none !important;
   vertical-align: top;
   padding: 0px;
 }
-
-.hole {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%); /* Center the hole */
-  height: 80px;
-  width: 80px;
-  border-radius: 100%;
-  background-color: white;
-  z-index: 0; /* Set a lower z-index value */
-}
-
-
-
 
 .row {
   padding: 0px;
@@ -58,11 +43,12 @@ body {
 .board {
   max-width: 700px;
   margin: auto;
-  border: 3px solid rgb(57 140 218);
-  background-color: rgb(57 140 218);
-  border-radius: 15px;
-
+  background-image: url('board.png');
+  background-size: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: contain;
 }
+
 .p1 {
   background-color: rgb(255, 233, 66);
 }

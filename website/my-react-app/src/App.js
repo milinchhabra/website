@@ -12,12 +12,9 @@ function Square({ player, hover, onSquareClick, Enter }) {
       {player !== null && (
         <div className={`circle ${player} ${hover ? 'hover' : ''} ${player ? 'show' : ''}`}></div>
       )}
-      <div className='hole'></div>
     </button>
   );
 }
-
-
 
 
 class SqInfo {
@@ -34,7 +31,6 @@ class SqInfo {
 export default function Board() {
   const [x, y] = [7, 6];
   let tempsquares = [];
-  let winstate = false
   for (let xi = 0; xi < y; xi++) {
     tempsquares[xi] = [];
     for (let yi = 0; yi < x; yi++) {
@@ -43,13 +39,18 @@ export default function Board() {
   }
   const [squares, setSquares] = useState(tempsquares);
   const [playerturn, setPlayerTurn] = useState('p1')
+  const [winstate, setWinState] = useState(false)
   const playClickSound = () => {
     const audio = new Audio(clickSound);
     audio.play();
   };
 
+  function restart(){
+    
+  }
 
   function handleClick(cellx,celly) {
+    if (!winstate) {
     let squares1 = structuredClone(squares)
     let bottomrow = 5
     for(let i = 5;i >= 0; i--) {
@@ -57,7 +58,7 @@ export default function Board() {
         bottomrow=i
         squares1[bottomrow][cellx].player = playerturn
         squares1[bottomrow][cellx].hover = false
-        winstate = CheckWin(squares1[bottomrow][cellx])
+        setWinState(CheckWin(squares1[bottomrow][cellx]))
         setTimeout(() => {
           playClickSound();
         }, 250);
@@ -73,11 +74,11 @@ export default function Board() {
     else {
       setPlayerTurn("p1")
     }
-
+  }
   }
 
   function onEnter(cellx,celly) {
-
+    if (!winstate) {
     let squares1 = RemoveHovers()
     let bottomrow = 5
     
@@ -92,6 +93,7 @@ export default function Board() {
 
 
     setSquares(squares1)  
+  }
   }
 
   function onLeave(){
