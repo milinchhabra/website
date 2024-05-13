@@ -1,21 +1,23 @@
-
-.parent {
-  position: relative;
-  width: 300px;
-  height: 200px;
-}
-
 body {
   margin: 0px;
   background-color: #302E2B;
 }
 
+.parent {
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  height: 90vh; /* Full viewport height */
+}
 
 .row {
   padding: 0px;
   margin: 0px;
 }
 
+.board {
+
+}
 
 .board-back{
   position: relative;
@@ -100,6 +102,10 @@ body {
 }
 .yellow {
   background-color: #FEE843;
+}
+
+.grey {
+  background-color: #a1a1a1;
 }
 h1 {
   text-align: center;
