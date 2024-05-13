@@ -9,12 +9,20 @@ function Square({ player, hover, onSquareClick, Enter }) {
       onClick={onSquareClick}
       onMouseEnter={Enter}
       className="square">
-      {}
-      {player !== null && (
+      {/* {player !== null && (
         <div className={`circle ${player} ${hover ? 'hover' : ''} ${player ? 'show' : ''}`}></div>
-      )}
+      )} */}
     </button>
   );
+}
+function Circle({ player, hover}) {
+  if (player === null) {
+    return null; // Return null if winstate is false
+  }
+  return (
+    <div className={`circle ${player} ${hover ? 'hover' : ''} ${player ? 'show' : ''}`}></div>
+
+  )
 }
 
 function Card({ color, winner, winstate, onButtonClick }) {
@@ -161,7 +169,6 @@ let tempplayerturn = new PlayerInfo('p1', 'yellow', user1)
     }
     return squares1 
   }
-
   function CheckWin(square) {
     //square should equal squares[x][y]
     let win = false;
@@ -216,22 +223,32 @@ let tempplayerturn = new PlayerInfo('p1', 'yellow', user1)
   }
 return (
 
-  <div className='"parent'>
-    <div className="board" onMouseLeave={onLeave}>
+  <div>
+    <div className="board-back" onMouseLeave={onLeave}>
       {squares.map((row, y) => (
         <div key={y}>
           {row.map((cell, x) => (
+          <div className='square-container'>
             <Square
               key={`${y}-${x}`}
               player={cell.player}
               hover={cell.hover}
               onSquareClick={() => handleClick(x, y)}
-              Enter={() => onEnter(x, y)}
+              Enter={() => onEnter(x, y)} 
             />
+            <Circle
+              player={cell.player}
+              hover={cell.hover}
+            />
+          </div>
           ))}
+          
         </div>
       ))}
+        <div className='board-front'>
+      </div>
     </div>
+
     <div className='player-info'>
     </div>
     <Card

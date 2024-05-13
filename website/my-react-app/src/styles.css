@@ -1,5 +1,6 @@
+
 .parent {
-  position: relative; 
+  position: relative;
   width: 300px;
   height: 200px;
 }
@@ -9,25 +10,64 @@ body {
   background-color: #302E2B;
 }
 
-.circle {
-  position: absolute;
-  top: 50%; /* Initially position the circles outside the viewport */
-  left: 50%;
-  transform: translate(-50%, -50%); /* Center the hole */
-  height: 80px;
-  width: 80px;
-  border-radius: 100%;
-  z-index: -1;
 
+.row {
+  padding: 0px;
+  margin: 0px;
 }
 
+
+.board-back{
+  position: relative;
+  z-index: 1;
+  max-width: 700px;
+  height: 600px;
+
+  margin: auto;
+  background-color: #0C395E;
+  border-radius: 15px;
+
+}
+.board-front{
+  position: absolute;
+  top: 0%;
+  margin: auto;
+  z-index: 3;
+  width: 700px;
+  height: 600px;
+  background-image: url('board.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  border-radius: 15px;
+}
+.circle {
+  z-index: 2;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 80px;
+  width: 80px;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+}
+
+/* Ensure that circles have a higher z-index than -1 */
 .circle:not(.hover) {
   animation-name: drop;
   animation-duration: 0.3s;
   animation-timing-function: ease-in;
 }
-
+.square-container {
+  display: inline-block;
+  position: relative; /* Add position relative to establish a stacking context */
+  width: 100px;
+  height: 100px;
+  vertical-align: top;
+  padding: 0px;
+}
 .square {
+  z-index: 4;
   position: relative; /* Add position relative to establish a stacking context */
   width: 100px;
   height: 100px;
@@ -37,25 +77,6 @@ body {
   padding: 0px;
 }
 
-.row {
-  padding: 0px;
-  margin: 0px;
-}
-
-
-.board {
-  position: absolute; /* Position the board within its parent container */
-  top: 50%; /* Move the board down by 50% from the top */
-  left: 50%; /* Move the board to the center horizontally */
-  transform: translate(-50%, -50%); /* Center the board */
-  max-width: 700px; /* Set the maximum width of the board */
-  margin: auto; /* Center the board horizontally */
-  background-image: url('board.png'); /* Set the board background image */
-  background-color: #0C395E;
-  background-size: contain; /* Ensure the background image fits within the board */
-  background-repeat: no-repeat; /* Prevent the background from repeating */
-  border-radius: 15px;
-}
 
 .p1 {
   background-image: url('yellowpiece.png');
@@ -66,7 +87,7 @@ body {
 .p2 {
   background-image: url('redpiece.png');
   background-size: 80px 80px;
-  background-color: #EE2B2A;
+  /* background-color: #EE2B2A; */
 
 }
   
@@ -111,7 +132,9 @@ h2 {
   border-radius: 5px;
   background-color: white;
   animation-name: dropfade;
-  animation-duration: 0.4s;}
+  animation-duration: 0.4s;
+  z-index: 10;
+}
 
 .card-header {
   color: white;
@@ -165,12 +188,8 @@ h2 {
 }
 
 @keyframes dropfade {
-  0% {
-    top: -200px; /* Starting position above the viewport */
-  }
-  25% {
-    opacity: 0; /* Starting opacity (fully transparent) */
-  }
+  0% { top: -200px;}
+  25% {opacity: 0;}
   100% {
     opacity: 1; /* Final opacity (fully opaque) */
     top: 50%; /* Final centered position */
