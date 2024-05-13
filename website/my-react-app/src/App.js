@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import clickSound from './click-sound.wav';
+ 
 
 
 function Square({ player, hover, onSquareClick, Enter }) {
@@ -16,6 +17,25 @@ function Square({ player, hover, onSquareClick, Enter }) {
   );
 }
 
+function Card({ color, winner, winstate, onButtonClick }) {
+  if (!winstate) {
+    return null; // Return null if winstate is false
+  }
+
+  return (
+    <div className="card">
+      <div className={`card-header ${color}`}>
+        <h2 style={{ color: color === 'yellow' ? 'black' : 'white' }}><b>{winner} Won</b></h2>
+      </div>
+      <div className="card-body">
+        <button className="restart-button" onClick={onButtonClick}>
+          <h2><b>Rematch</b></h2>
+        </button>
+      </div>
+    </div>
+  );
+}
+
 
 class SqInfo {
   constructor(player, hover, x, y) { 
@@ -27,6 +47,13 @@ class SqInfo {
   
 }
 
+class PlayerInfo {
+  constructor(player,color,name) {
+    this.player = player
+    this.color = color
+    this.name = name
+  }
+}
 
 export default function Board() {
   const [x, y] = [7, 6];
@@ -37,8 +64,12 @@ export default function Board() {
       tempsquares[xi][yi] = new SqInfo(null,false,xi,yi);
     }
   }
+let user1 = 'test1'
+let user2 = 'test2'
+let tempplayerturn = new PlayerInfo('p1', 'yellow', user1)
+
   const [squares, setSquares] = useState(tempsquares);
-  const [playerturn, setPlayerTurn] = useState('p1')
+  const [playerturn, setPlayerTurn] = useState(tempplayerturn)
   const [winstate, setWinState] = useState(false)
   const playClickSound = () => {
     const audio = new Audio(clickSound);
@@ -46,35 +77,49 @@ export default function Board() {
   };
 
   function restart(){
-    
+    let squares1 = [];
+
+    for (let xi = 0; xi < y; xi++) {
+      squares1[xi] = [];
+      for (let yi = 0; yi < x; yi++) {
+        squares1[xi][yi] = new SqInfo(null,false,xi,yi);
+      }
+    }  
+    setPlayerTurn(new PlayerInfo('p1', 'yellow', user1))
+    setWinState(false)
+    setSquares(squares1)  
   }
 
   function handleClick(cellx,celly) {
     if (!winstate) {
     let squares1 = structuredClone(squares)
     let bottomrow = 5
+    let winstate1 = false
     for(let i = 5;i >= 0; i--) {
       if (squares1[i][cellx].player == null||squares1[i][cellx].hover === true) {
         bottomrow=i
-        squares1[bottomrow][cellx].player = playerturn
+        squares1[bottomrow][cellx].player = playerturn.player
         squares1[bottomrow][cellx].hover = false
-        setWinState(CheckWin(squares1[bottomrow][cellx]))
+        winstate1 = CheckWin(squares1[bottomrow][cellx])
         setTimeout(() => {
           playClickSound();
         }, 250);
-      break
+        if (!winstate1) {
+          if (playerturn.player === "p1") {
+            setPlayerTurn(new PlayerInfo('p2', 'red', user2))
+          }
+          else {
+            setPlayerTurn(new PlayerInfo('p1', 'yellow', user1))
+          }
+        }
+        setWinState(winstate1)
+  
+        setSquares(squares1)  
+        break
+      }
       }
     }
 
-    setSquares(squares1)  
-
-    if (playerturn === "p1") {
-      setPlayerTurn("p2")
-    }
-    else {
-      setPlayerTurn("p1")
-    }
-  }
   }
 
   function onEnter(cellx,celly) {
@@ -86,7 +131,7 @@ export default function Board() {
       if (squares1[i][cellx].player == null||squares1[i][cellx].hover === true) {
         bottomrow=i
         squares1[bottomrow][cellx].hover = true
-        squares1[bottomrow][cellx].player = playerturn
+        squares1[bottomrow][cellx].player = playerturn.player
         break
       }
     }
@@ -161,26 +206,41 @@ export default function Board() {
           break;
         }
       }
-      if (linelength === 4) {
+      if (linelength >= 4) {
         win = true;
-        console.log("Player " + playerturn + " wins!");
+        console.log("Player " + playerturn.player + " wins!");
 
       }
     }
     return win;
   }
-  return (
-    <div class="board" onMouseLeave={onLeave}> {
-    // <div onMouseLeave={RemoveHovers}  > {
-      squares.map((row,y) => {
-        return <div>{
-          row.map((cell,x) => {
-                return <Square 
-              player={cell.player} hover={cell.hover} onSquareClick={(()=>{handleClick(x,y)})}  Enter={(()=>{onEnter(x,y)})}>  
-              </Square>
-        })
-      }</div>})
-  } </div>
-  )
+return (
 
+  <div className='"parent'>
+    <div className="board" onMouseLeave={onLeave}>
+      {squares.map((row, y) => (
+        <div key={y}>
+          {row.map((cell, x) => (
+            <Square
+              key={`${y}-${x}`}
+              player={cell.player}
+              hover={cell.hover}
+              onSquareClick={() => handleClick(x, y)}
+              Enter={() => onEnter(x, y)}
+            />
+          ))}
+        </div>
+      ))}
+    </div>
+    <div className='player-info'>
+    </div>
+    <Card
+      color={playerturn.color}
+      winner={playerturn.name}
+      winstate = {winstate}
+      onButtonClick={() => restart()}
+
+    ></Card>
+  </div>
+  );
 }

@@ -1,5 +1,12 @@
+.parent {
+  position: relative; 
+  width: 300px;
+  height: 200px;
+}
+
 body {
   margin: 0px;
+  background-color: #302E2B;
 }
 
 .circle {
@@ -20,11 +27,6 @@ body {
   animation-timing-function: ease-in;
 }
 
-@keyframes drop {
-  0%   { left: 50px; top: -500px; } /* Starting position outside the viewport */
-  100% { left: 50px; top: 50px; } /* Final position */
-}
-
 .square {
   position: relative; /* Add position relative to establish a stacking context */
   width: 100px;
@@ -40,13 +42,19 @@ body {
   margin: 0px;
 }
 
+
 .board {
-  max-width: 700px;
-  margin: auto;
-  background-image: url('board.png');
-  background-size: 50% 50%;
-  background-repeat: no-repeat;
-  background-size: contain;
+  position: absolute; /* Position the board within its parent container */
+  top: 50%; /* Move the board down by 50% from the top */
+  left: 50%; /* Move the board to the center horizontally */
+  transform: translate(-50%, -50%); /* Center the board */
+  max-width: 700px; /* Set the maximum width of the board */
+  margin: auto; /* Center the board horizontally */
+  background-image: url('board.png'); /* Set the board background image */
+  background-color: #0C395E;
+  background-size: contain; /* Ensure the background image fits within the board */
+  background-repeat: no-repeat; /* Prevent the background from repeating */
+  border-radius: 15px;
 }
 
 .p1 {
@@ -57,8 +65,114 @@ body {
 
 .p2 {
   background-image: url('redpiece.png');
-  background-size: 80px 80px;}
+  background-size: 80px 80px;
+  background-color: #EE2B2A;
+
+}
+  
 
 .hover {
   opacity: 0.5;
+}
+.red {
+  background-color: #EE2B2A;
+}
+.yellow {
+  background-color: #FEE843;
+}
+h1 {
+  text-align: center;
+  color: black;
+  
+}
+h2 {
+  text-align: center;
+  color: white;
+  font-family: 'Roboto', sans-serif; /* Apply Roboto font to the card */
+}
+
+.container {
+  position: relative; /* Ensure proper positioning context for child elements */
+  height: 100vh; /* Adjust container height based on viewport */
+  display: flex;
+  justify-content: center; /* Center content horizontally */
+  align-items: center; /* Center content vertically */
+  background-color: #f0f0f0; /* Optional: Set a background color for the container */
+}
+
+.card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px; /* Set a fixed width for the card */
+  max-width: 80%; /* Limit the maximum width of the card */
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  border-radius: 5px;
+  background-color: white;
+  animation-name: dropfade;
+  animation-duration: 0.4s;}
+
+.card-header {
+  color: white;
+  padding: 1px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column; /* Arrange child elements vertically */
+  justify-content: center; /* Center items vertically */
+  align-items: center; /* Center items horizontally */
+  padding: 20px;}
+
+  .restart-button {
+    background-color: #81B64C;
+    color: #5D9948;
+    width: 200px;
+    height: 50px;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0px 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .restart-button:hover {
+    background-color: #A0CF5E;
+    color: #76AA48;
+
+  }
+  
+  .restart-button h2 {
+    margin: 0; /* Remove margin to ensure text is properly centered */
+    color: white; /* Set text color */
+    font-family: 'Roboto', sans-serif; /* Apply Roboto font */
+    font-size: 18px; /* Adjust font size as needed */
+    font-weight: bold; /* Apply bold font weight */
+    text-align: center; /* Center text horizontally */
+
+  }
+  
+
+@keyframes drop {
+  0%   { top: -500px;} /* Starting position above the viewport */
+  100% { top: 20%;} /* Final centered position */
+}
+
+@keyframes dropfade {
+  0% {
+    top: -200px; /* Starting position above the viewport */
+  }
+  25% {
+    opacity: 0; /* Starting opacity (fully transparent) */
+  }
+  100% {
+    opacity: 1; /* Final opacity (fully opaque) */
+    top: 50%; /* Final centered position */
+  }
 }
