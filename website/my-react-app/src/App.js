@@ -9,9 +9,6 @@ function Square({ player, hover, onSquareClick, Enter }) {
       onClick={onSquareClick}
       onMouseEnter={Enter}
       className="square">
-      {/* {player !== null && (
-        <div className={`circle ${player} ${hover ? 'hover' : ''} ${player ? 'show' : ''}`}></div>
-      )} */}
     </button>
   );
 }
@@ -26,14 +23,24 @@ function Circle({ player, hover}) {
 }
 
 function Card({ color, winner, winstate, onButtonClick }) {
-  if (!winstate) {
+  let headerText;
+  if (winstate === 'draw') {
+    headerText = 'Draw';
+  } else {
+    headerText = `${winner} Won`;
+  }
+  if (winstate === "playing") {
     return null; // Return null if winstate is false
   }
-
   return (
     <div className="card">
       <div className={`card-header ${color}`}>
-        <h2 style={{ color: color === 'yellow' ? 'black' : 'white' }}><b>{winner} Won</b></h2>
+          <h2 style={{ color: color === 'yellow' ? 'black' : 'white' }}>
+            <b>{headerText}</b>
+          </h2>
+        <button className="close-button" onClick={onButtonClick}>
+        <h2 style={{ color: color === 'yellow' ? 'black' : 'white' }}><b>x</b></h2>
+        </button>
       </div>
       <div className="card-body">
         <button className="restart-button" onClick={onButtonClick}>
@@ -43,6 +50,7 @@ function Card({ color, winner, winstate, onButtonClick }) {
     </div>
   );
 }
+
 
 
 class SqInfo {
@@ -78,7 +86,7 @@ let tempplayerturn = new PlayerInfo('p1', 'yellow', user1)
 
   const [squares, setSquares] = useState(tempsquares);
   const [playerturn, setPlayerTurn] = useState(tempplayerturn)
-  const [winstate, setWinState] = useState(false)
+  const [gamestate, setGameState] = useState('playing')
   const playClickSound = () => {
     const audio = new Audio(clickSound);
     audio.play();
@@ -94,12 +102,12 @@ let tempplayerturn = new PlayerInfo('p1', 'yellow', user1)
       }
     }  
     setPlayerTurn(new PlayerInfo('p1', 'yellow', user1))
-    setWinState(false)
+    setGameState('playing')
     setSquares(squares1)  
   }
 
   function handleClick(cellx, celly) {
-    if (!winstate) {
+    if (gamestate === "playing") {
       let squaresCopy = structuredClone(squares);
       let bottomRow = 5;
       let winstate1 = false;
@@ -124,8 +132,9 @@ let tempplayerturn = new PlayerInfo('p1', 'yellow', user1)
               : new PlayerInfo('p1', 'yellow', user1);
             setPlayerTurn(nextPlayer);
           }
-  
-          setWinState(winstate1);
+          else {
+            setGameState("win");
+          }
           setSquares(squaresCopy);
           break;
         }
@@ -135,15 +144,15 @@ let tempplayerturn = new PlayerInfo('p1', 'yellow', user1)
       let tie = CheckTie()  
       if (tie && !winstate1) {
         // Set winstate to true for tie
-        setWinState(true);
-        setPlayerTurn(new PlayerInfo("Draw", 'grey', user1));
+        setGameState("draw");
+        setPlayerTurn(new PlayerInfo(null, 'grey', user1));
       }
     }
   }
   
 
   function onEnter(cellx,celly) {
-    if (!winstate) {
+    if (gamestate === "playing") {
     let squares1 = RemoveHovers()
     let bottomrow = 5
     
@@ -275,7 +284,7 @@ return (
   <Card
     color={playerturn.color}
     winner={playerturn.name}
-    winstate={winstate}
+    winstate={gamestate}
     onButtonClick={restart}
   />
 </div>

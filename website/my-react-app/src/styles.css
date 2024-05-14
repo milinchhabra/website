@@ -187,7 +187,23 @@ h2 {
 
   }
   
+  .close-button {
+    align-items: center;
+    background-color: transparent;
+    border: none;
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+  }
 
+  
 @keyframes drop {
   0%   { top: -500px;} /* Starting position above the viewport */
   100% { top: 20%;} /* Final centered position */
