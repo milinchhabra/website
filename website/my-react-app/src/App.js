@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import Peer from 'peerjs';
 import clickSound from './click-sound.wav';
  
 
@@ -39,7 +40,7 @@ function Card({ color, winner, winstate, onButtonClick }) {
             <b>{headerText}</b>
           </h2>
         <button className="close-button" onClick={onButtonClick}>
-        <h2 style={{ color: color === 'yellow' ? 'black' : 'white' }}><b>x</b></h2>
+        <div style={{ color: color === 'yellow' ? 'black' : 'white' }}><b>B</b></div>
         </button>
       </div>
       <div className="card-body">
@@ -84,13 +85,36 @@ let user1 = 'test1'
 let user2 = 'test2'
 let tempplayerturn = new PlayerInfo('p1', 'yellow', user1)
 
-  const [squares, setSquares] = useState(tempsquares);
-  const [playerturn, setPlayerTurn] = useState(tempplayerturn)
-  const [gamestate, setGameState] = useState('playing')
-  const playClickSound = () => {
-    const audio = new Audio(clickSound);
-    audio.play();
+const [connectionid, setConnectionId] = useState('');
+const [peer, setPeer] = useState(null); // State to hold the Peer instance
+const [connection, setConnection] = useState(null); // State to hold the Peer instance
+useEffect(() => {
+  // Create a new Peer instance when the component mounts
+  const peer = new Peer();
+  peer.on('open', function(id) {
+    console.log('My peer ID is: ' + id);
+    });
+  // Set up event handler for incoming connections
+  peer.on('connection', (connection) => {
+    connection.on('data', (data) => {
+    console.log('Received data from peer ' + connection.peer + ': ' + data);
+    setConnection(peer.connect(connection.peer));
+
+    });
+  });
+  setPeer(peer);
+  return () => {
+    peer.disconnect();
+    peer.destroy();
   };
+}, []);
+  
+const [squares, setSquares] = useState(tempsquares);
+const [playerturn, setPlayerTurn] = useState(tempplayerturn)
+const [gamestate, setGameState] = useState('playing')
+const playClickSound = () => {
+const audio = new Audio(clickSound); audio.play();
+};
 
   function restart(){
     let squares1 = [];
@@ -107,6 +131,7 @@ let tempplayerturn = new PlayerInfo('p1', 'yellow', user1)
   }
 
   function handleClick(cellx, celly) {
+    connection.send(cellx, celly)
     if (gamestate === "playing") {
       let squaresCopy = structuredClone(squares);
       let bottomRow = 5;
@@ -254,9 +279,29 @@ let tempplayerturn = new PlayerInfo('p1', 'yellow', user1)
     }
     return win;
   }
+
+  function connect(peerId) {
+  
+    const connection1 = peer.connect(peerId); // Connect to the specified peer ID
+    console.log('Connecting to peer: ' + peerId);
+
+    connection1.on('open', () => {
+      console.log('Connection opened with peer: ' + peerId);
+      // Send a message when the connection is open
+      connection1.send('hi');
+      console.log("Sent 'hi'");
+    });
+    setConnection(connection1)
+
+  }
+  
+
+
+  
 return (
 
-  <div className='parent'>
+  <div id='parent'>
+    <link href="https://db.onlinewebfonts.com/c/369414b7f68cb9a1ba2e7089f801ec67?family=Chess+Glyph+Regular" rel="stylesheet"></link>
   <div className='board'>
     <div className="board-back" onMouseLeave={onLeave}>
       {squares.map((row, y) => (
@@ -280,12 +325,33 @@ return (
       <div className='board-front'></div>
     </div>
   </div>
-  <div className='player-info'></div>
+  <div id='player-info'>
+     <div className='player-left'>
+      <div className = 'player-left-icon'> </div>
+      <div className = 'player-left-text'>{user1} </div>
+     </div>
+     <div className='player-right'>
+     <div className = 'player-right-text'>{user2} </div>
+      <div className = 'player-right-icon'> </div>
+     </div>
+     <div>
+
+     </div>
+  </div>
   <Card
     color={playerturn.color}
     winner={playerturn.name}
     winstate={gamestate}
     onButtonClick={restart}
   />
+  <div>
+<input
+  type="text"
+  value={connectionid}
+  onChange={(e) => setConnectionId(e.target.value)}
+  placeholder="Enter Peer ID"
+/>
+<button onClick={() => connect(connectionid)}>Connect</button>
+</div>
 </div>
 )}
