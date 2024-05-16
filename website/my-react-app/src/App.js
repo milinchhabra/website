@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Peer from 'peerjs';
 import clickSound from './click-sound.wav';
  
@@ -84,15 +84,23 @@ export default function Board() {
 let user1 = 'test1'
 let user2 = 'test2'
 let tempplayerturn = new PlayerInfo('p1', 'yellow', user1)
+const search = window.location.search;
+const params = new URLSearchParams(search);
 
 const [connectionid, setConnectionId] = useState('');
 const [peer, setPeer] = useState(null); // State to hold the Peer instance
-const [connection, setConnection] = useState(null); // State to hold the Peer instance
+const [connection, setConnection] = useState(''); // State to hold the Peer instance
+
+
 useEffect(() => {
   // Create a new Peer instance when the component mounts
-  const peer = new Peer();
+  const peer = new Peer( Array.from({ length: 6 }, () => 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.charAt(Math.floor(Math.random() * 62))).join(''));
+
   peer.on('open', function(id) {
     console.log('My peer ID is: ' + id);
+    // peer.connect(params.get('x'))
+    // peer.connect(params.get('x')).send('hi')
+    // setConnection(peer.connect(params.get('x')));
     });
   // Set up event handler for incoming connections
   peer.on('connection', (connection) => {
@@ -103,12 +111,16 @@ useEffect(() => {
     });
   });
   setPeer(peer);
+
   return () => {
     peer.disconnect();
     peer.destroy();
   };
 }, []);
   
+
+
+
 const [squares, setSquares] = useState(tempsquares);
 const [playerturn, setPlayerTurn] = useState(tempplayerturn)
 const [gamestate, setGameState] = useState('playing')
@@ -131,7 +143,7 @@ const audio = new Audio(clickSound); audio.play();
   }
 
   function handleClick(cellx, celly) {
-    connection.send(cellx, celly)
+    // connection.send(cellx, celly)
     if (gamestate === "playing") {
       let squaresCopy = structuredClone(squares);
       let bottomRow = 5;
@@ -281,7 +293,7 @@ const audio = new Audio(clickSound); audio.play();
   }
 
   function connect(peerId) {
-  
+    peerId = params.get('x')
     const connection1 = peer.connect(peerId); // Connect to the specified peer ID
     console.log('Connecting to peer: ' + peerId);
 
@@ -345,13 +357,13 @@ return (
     onButtonClick={restart}
   />
   <div>
-<input
+{/* <input
   type="text"
   value={connectionid}
   onChange={(e) => setConnectionId(e.target.value)}
   placeholder="Enter Peer ID"
 />
-<button onClick={() => connect(connectionid)}>Connect</button>
+<button onClick={() => connect(connectionid)}>Connect</button> */}
 </div>
 </div>
 )}
