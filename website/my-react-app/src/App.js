@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Peer from 'peerjs';
 import clickSound from './click-sound.wav';
- 
+
 
 
 function Square({ player, hover, onSquareClick, Enter }) {
@@ -40,7 +40,7 @@ function Card({ color, winner, winstate, onButtonClick }) {
             <b>{headerText}</b>
           </h2>
         <button className="close-button" onClick={onButtonClick}>
-        <div style={{ color: color === 'yellow' ? 'black' : 'white' }}><b>B</b></div>
+        <div style={{ color: color === 'yellow' ? 'black' : 'white' }}><b>x</b></div>
         </button>
       </div>
       <div className="card-body">
@@ -84,49 +84,53 @@ export default function Board() {
 let user1 = 'test1'
 let user2 = 'test2'
 let tempplayerturn = new PlayerInfo('p1', 'yellow', user1)
+
 const search = window.location.search;
 const params = new URLSearchParams(search);
-
-const [connectionid, setConnectionId] = useState('');
-const [peer, setPeer] = useState(null); // State to hold the Peer instance
-const [connection, setConnection] = useState(''); // State to hold the Peer instance
-
-
-useEffect(() => {
-  // Create a new Peer instance when the component mounts
-  const peer = new Peer( Array.from({ length: 6 }, () => 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.charAt(Math.floor(Math.random() * 62))).join(''));
-
-  peer.on('open', function(id) {
-    console.log('My peer ID is: ' + id);
-    // peer.connect(params.get('x'))
-    // peer.connect(params.get('x')).send('hi')
-    // setConnection(peer.connect(params.get('x')));
-    });
-  // Set up event handler for incoming connections
-  peer.on('connection', (connection) => {
-    connection.on('data', (data) => {
-    console.log('Received data from peer ' + connection.peer + ': ' + data);
-    setConnection(peer.connect(connection.peer));
-
-    });
-  });
-  setPeer(peer);
-
-  return () => {
-    peer.disconnect();
-    peer.destroy();
-  };
-}, []);
-  
-
-
-
+const [connectionId, setConnectionId] = useState('');
+const [peer, setPeer] = useState(new Peer(
+  Array.from({ length: 6 }, () => 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.charAt(Math.floor(Math.random() * 62))).join('')
+));
+const [connection, setConnection] = useState(null);
 const [squares, setSquares] = useState(tempsquares);
 const [playerturn, setPlayerTurn] = useState(tempplayerturn)
 const [gamestate, setGameState] = useState('playing')
+const [connected, setConnect] = useState(false)
+
 const playClickSound = () => {
 const audio = new Audio(clickSound); audio.play();
 };
+  useEffect(() => {
+    console.log('start useeffect',connected)
+
+    if (!connected) {
+      peer.on('open', function (id) {
+        console.log('My peer ID is: ' + id);
+        console.log(`${window.location.origin}?x=${id}`);
+        // setConnection(connection1)
+      })
+      if (params.get('x') != null) {
+        var conn = peer.connect(params.get('x'));
+        console.log('trying to connect', params.get('x'))
+        setConnect(true);
+        conn.on('data', function(data) { 
+          console.log(data)
+        });
+        }
+      else {
+        peer.on('connection', function(conn) { 
+          console.log('got a connection')
+          setConnect(true)
+          conn.on('data', function(data) { 
+            console.log(data)
+          });
+          conn.send('hi')
+         })
+      }
+    }  
+  	return () => {
+  	};
+  }, []);
 
   function restart(){
     let squares1 = [];
@@ -143,7 +147,6 @@ const audio = new Audio(clickSound); audio.play();
   }
 
   function handleClick(cellx, celly) {
-    // connection.send(cellx, celly)
     if (gamestate === "playing") {
       let squaresCopy = structuredClone(squares);
       let bottomRow = 5;
@@ -292,28 +295,17 @@ const audio = new Audio(clickSound); audio.play();
     return win;
   }
 
-  function connect(peerId) {
-    peerId = params.get('x')
-    const connection1 = peer.connect(peerId); // Connect to the specified peer ID
-    console.log('Connecting to peer: ' + peerId);
 
-    connection1.on('open', () => {
-      console.log('Connection opened with peer: ' + peerId);
-      // Send a message when the connection is open
-      connection1.send('hi');
-      console.log("Sent 'hi'");
-    });
-    setConnection(connection1)
-
-  }
-  
 
 
   
 return (
 
   <div id='parent'>
-    <link href="https://db.onlinewebfonts.com/c/369414b7f68cb9a1ba2e7089f801ec67?family=Chess+Glyph+Regular" rel="stylesheet"></link>
+        <link href="https://db.onlinewebfonts.com/c/369414b7f68cb9a1ba2e7089f801ec67?family=Chess+Glyph+Regular" rel="stylesheet"></link>
+
+  <div id='board-layout'>
+  <div>
   <div className='board'>
     <div className="board-back" onMouseLeave={onLeave}>
       {squares.map((row, y) => (
@@ -337,7 +329,8 @@ return (
       <div className='board-front'></div>
     </div>
   </div>
-  <div id='player-info'>
+  </div>
+  <div className='player-info'>
      <div className='player-left'>
       <div className = 'player-left-icon'> </div>
       <div className = 'player-left-text'>{user1} </div>
@@ -357,13 +350,7 @@ return (
     onButtonClick={restart}
   />
   <div>
-{/* <input
-  type="text"
-  value={connectionid}
-  onChange={(e) => setConnectionId(e.target.value)}
-  placeholder="Enter Peer ID"
-/>
-<button onClick={() => connect(connectionid)}>Connect</button> */}
+</div>
 </div>
 </div>
 )}

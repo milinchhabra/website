@@ -1,0 +1,30 @@
+  let connection = null;
+  const peer = new Peer(
+    Array.from({ length: 6 }, () => 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.charAt(Math.floor(Math.random() * 62))).join('')
+  );
+  const search = window.location.search;
+  const params = new URLSearchParams(search);
+
+  function connect() {
+    let peerid = params.get('x')
+    peer.on('open', function (id) {
+      console.log('My peer ID is: ' + id);
+      console.log(`${window.location.origin}?x=${id}`);
+    });
+  
+
+   if (peerid != null) {
+    connection = peer.connect(peerid);
+    console.log('connected with', connection)
+    connection.send('hi');
+    console.log("Sent 'hi'");
+
+    // connection.on('open', () => {
+    //   console.log('Connection opened with peer: ' + r.get('x'));
+    //   connection.send('hi');
+    //   console.log("Sent 'hi'");
+    // });
+   }
+  }
+  
+connect()

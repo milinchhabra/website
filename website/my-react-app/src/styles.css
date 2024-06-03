@@ -10,7 +10,15 @@ body {
   justify-content: center; /* Center horizontally */
   align-items: center; /* Center vertically */
   flex-direction: column;
-  height: 90vh; /* Full viewport height */
+  height: 90vh; /* Full viewport height */}
+  
+#board-layout {
+  display: flex;
+  flex-direction: column;
+  grid-area: top / board-layout;
+  margin: 0 auto;
+  position: relative;
+  width: min-content;
 }
 
 .row {
@@ -226,13 +234,13 @@ h2 {
 }
 
 
-#player-info {
+.player-info {
   position: relative;
   width: 700px; /* Ensure player info container stretches to match board width */
   display: block;
   justify-content: space-between; /* Distribute space between children */
   color: white;
-
+  height: 40px;
 }
 .player-left {
   position: absolute;
